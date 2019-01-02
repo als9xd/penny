@@ -87,6 +87,15 @@ func UpdateThread(db *sqlx.DB,c *gin.Context) {
     WHERE id = $2
     RETURNING id,name;
   `,c.PostForm("name"),c.Param("id"))
+  if err == sql.ErrNoRows {
+    c.JSON(http.StatusNotFound,gin.H{
+      "error": gin.H{
+        "code": http.StatusNotFound,
+        "message": fmt.Sprintf("No thread with id '%s'",c.Param("id")),
+      },
+    })
+    return
+  }
   if err != nil {
     log.Fatal(err)
   }
