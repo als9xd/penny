@@ -69,6 +69,30 @@ func CreateThread(db *sqlx.DB,c *gin.Context) {
   c.JSON(http.StatusOK, gin.H{"data":thread})
 }
 
+func UpdateThread(db *sqlx.DB,c *gin.Context) {
+  var b models.Thread
+  err := c.ShouldBind(&b)
+  if err != nil {
+    c.JSON(http.StatusBadRequest,gin.H{
+      "error": gin.H{
+        "code": http.StatusBadRequest,
+        "message": err.Error(),
+      },
+    })
+    return
+  }
+  thread := models.Thread{}
+  err = db.Get(&thread,`
+    UPDATE thread SET name = $1
+    WHERE id = $2
+    RETURNING id,name;
+  `,c.PostForm("name"),c.Param("id"))
+  if err != nil {
+    log.Fatal(err)
+  }
+  c.JSON(http.StatusOK, gin.H{"data":thread})
+}
+
 
 func DeleteThread(db *sqlx.DB,c *gin.Context) {
   thread := models.Thread{}
