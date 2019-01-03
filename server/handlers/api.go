@@ -65,10 +65,10 @@ func CreateThread(db *sqlx.DB,c *gin.Context) {
   }
   thread := models.Thread{}
   err = db.Get(&thread,`
-    INSERT INTO thread (name)
+    INSERT INTO thread (name,creator_id)
     VALUES ($1)
     RETURNING id,name,creator_id;
-  `,c.PostForm("name"))
+  `,c.PostForm("name"),c.PostForm("creator_id"))
   if err != nil {
     log.Fatal(err)
   }
@@ -179,7 +179,7 @@ func CreatePost(db *sqlx.DB,c *gin.Context) {
     INSERT INTO post (comment,profile_id,thread_id)
     VALUES ($1,$2,$3)
     RETURNING id,comment,profile_id,thread_id;
-  `,c.PostForm("name"))
+  `,c.PostForm("comment"),c.PostForm("profile_id"),c.PostForm("thread_id"))
   if err != nil {
     log.Fatal(err)
   }
@@ -290,7 +290,7 @@ func CreateProfile(db *sqlx.DB,c *gin.Context) {
   }
   profile := models.Profile{}
   err = db.Get(&profile,`
-    INSERT INTO profile (name,email)
+    INSERT INTO profile (username,email)
     VALUES ($1,$2)
     RETURNING id,username,email;
   `,c.PostForm("username"),c.PostForm("email"))
