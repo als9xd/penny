@@ -35,5 +35,7 @@ func main(){
   apiv1.PUT("/t/:id", func(c *gin.Context) {handlers.UpdateThread(db,c)})
   apiv1.DELETE("/t/:id", func(c *gin.Context) {handlers.DeleteThread(db,c)})
 
+  apiv1.GET("/p/:id", func(c *gin.Context) {handlers.GetPost(db,c)})
+
   router.Run(":3000")
 }
