@@ -11,7 +11,7 @@ import (
   "github.com/als9xd/penny/server/handlers"
 )
 
-var userSchema = `
+var profileSchema = `
 CREATE TABLE IF NOT EXISTS profile (
   id       SERIAL PRIMARY KEY,
   username VARCHAR(100) NOT NULL,
@@ -22,15 +22,15 @@ var threadSchema = `
 CREATE TABLE IF NOT EXISTS thread (
   id         SERIAL PRIMARY KEY,
   name       VARCHAR(100) NOT NULL,
-  profile_id NUMERIC REFERENCES profile (id)
+  profile_id INTEGER REFERENCES profile (id)
 )`
 
 var postSchema = `
 CREATE TABLE IF NOT EXISTS post (
   id         SERIAL PRIMARY KEY,
   comment    TEXT,
-  profile_id NUMERIC REFERENCES profile (id),
-  thread_id  NUMERIC REFERENCES thread (id)
+  profile_id INTEGER REFERENCES profile (id),
+  thread_id  INTEGER REFERENCES thread (id)
 )`
 
 
@@ -40,7 +40,7 @@ func main(){
 		log.Fatal(err)
 	}
 
-  db.MustExec(userSchema)
+  db.MustExec(profileSchema)
   db.MustExec(threadSchema)
   db.MustExec(postSchema)
 
