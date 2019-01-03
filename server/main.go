@@ -11,26 +11,28 @@ import (
   "github.com/als9xd/penny/server/handlers"
 )
 
-var schema = `
-CREATE TABLE IF NOT EXISTS user (
+var userSchema = `
+CREATE TABLE IF NOT EXISTS profile (
   id       SERIAL PRIMARY KEY,
   username VARCHAR(100) NOT NULL,
-  email    VARCHAR(100) NOT NULL
-)
+  email    VARCHAR(100)
+)`
 
-CREATE TABLE IF NOT EXISTS post (
-  id        SERIAL PRIMARY KEY,
-  comment   TEXT NOT NULL,
-  user_id   INTEGER REFERENCES user (id),
-  thread_id INTEGER REFERENCES thread (id)
-)
-
+var threadSchema = `
 CREATE TABLE IF NOT EXISTS thread (
-  id      SERIAL PRIMARY KEY,
-  name    VARCHAR(100) NOT NULL,
-  user_id INTEGER REFERENCES user (id)
-)
-`
+  id         SERIAL PRIMARY KEY,
+  name       VARCHAR(100) NOT NULL,
+  profile_id NUMERIC REFERENCES profile (id)
+)`
+
+var postSchema = `
+CREATE TABLE IF NOT EXISTS post (
+  id         SERIAL PRIMARY KEY,
+  comment    TEXT,
+  profile_id NUMERIC REFERENCES profile (id),
+  thread_id  NUMERIC REFERENCES thread (id)
+)`
+
 
 func main(){
   db, err := sqlx.Connect("postgres", "host=db user=docker password=docker dbname=penny sslmode=disable")
@@ -38,7 +40,9 @@ func main(){
 		log.Fatal(err)
 	}
 
-  db.MustExec(schema)
+  db.MustExec(userSchema)
+  db.MustExec(threadSchema)
+  db.MustExec(postSchema)
 
   router := gin.Default()
 
@@ -56,11 +60,11 @@ func main(){
   apiv1.PUT("/p/:id", func(c *gin.Context) {handlers.UpdatePost(db,c)})
   apiv1.DELETE("/p/:id", func(c *gin.Context) {handlers.DeletePost(db,c)})
 
-  apiv1.GET("/u/:id", func(c *gin.Context) {handlers.GetUser(db,c)})
-  apiv1.GET("/u", func(c *gin.Context) {handlers.GetUsers(db,c)})
-  apiv1.POST("/u", func(c *gin.Context) {handlers.CreateUser(db,c)})
-  apiv1.PUT("/u/:id", func(c *gin.Context) {handlers.UpdateUser(db,c)})
-  apiv1.DELETE("/u/:id", func(c *gin.Context) {handlers.DeleteUser(db,c)})
+  apiv1.GET("/u/:id", func(c *gin.Context) {handlers.GetProfile(db,c)})
+  apiv1.GET("/u", func(c *gin.Context) {handlers.GetProfiles(db,c)})
+  apiv1.POST("/u", func(c *gin.Context) {handlers.CreateProfile(db,c)})
+  apiv1.PUT("/u/:id", func(c *gin.Context) {handlers.UpdateProfile(db,c)})
+  apiv1.DELETE("/u/:id", func(c *gin.Context) {handlers.DeleteProfile(db,c)})
 
   router.Run(":3000")
 }
