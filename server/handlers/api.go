@@ -19,8 +19,8 @@ import (
 func GetThread(db *sqlx.DB,c *gin.Context) {
   thread := models.Thread{}
   err := db.Get(&thread,`
-    SELECT thread.id,thread.name,thread.creator_id,array_agg(posts.id)
-    FROM thread INNER JOIN posts ON thread.id = posts.thread_id
+    SELECT thread.id,thread.name,thread.creator_id,array_agg(post.id)
+    FROM thread INNER JOIN post ON thread.id = post.thread_id
     WHERE thread.id = $1;
   `,c.Param("id"))
   if err == sql.ErrNoRows {
@@ -41,9 +41,9 @@ func GetThread(db *sqlx.DB,c *gin.Context) {
 func GetThreads(db *sqlx.DB,c *gin.Context) {
   threads := []models.Thread{}
   err := db.Select(&threads,`
-    SELECT thread.id,thread.name,thread.creator_id,array_agg(posts.id)
+    SELECT thread.id,thread.name,thread.creator_id,array_agg(post.id)
     FROM thread
-    INNER JOIN posts ON thread.id = posts.thread_id;
+    INNER JOIN post ON thread.id = post.thread_id;
   `)
   if err != nil {
     log.Fatal(err)

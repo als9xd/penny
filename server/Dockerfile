@@ -5,6 +5,6 @@ WORKDIR /go/src/app
 
 ADD . /go/src/app
 
-RUN go get -v
+RUN go get -v ./...
 EXPOSE 3000
 CMD ["go","run","main.go"]
