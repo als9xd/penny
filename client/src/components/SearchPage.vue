@@ -109,16 +109,8 @@ export default {
     subscriptions() {
       return store.state.subscriptions;
     },
-    searchInput() {
-      return store.state.searchInput;
-    },
     jwt() {
       return store.state.jwt;
-    }
-  },
-  watch: {
-    searchInput(newSearchInput) {
-      this.search(newSearchInput);
     }
   },
   methods: {

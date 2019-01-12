@@ -76,7 +76,7 @@ var searchObject = function(
 };
 
 export default {
-  name: "Post",
+  name: "PostPage",
   computed: {
     activePostId() {
       return store.state.activePostId;
@@ -143,7 +143,6 @@ export default {
           }
         })
         .then(response => {
-          console.log(response.data.data.comment);
           this.updateComments(response.data.data.comment);
         });
     }

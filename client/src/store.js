@@ -9,7 +9,6 @@ export default new Vuex.Store({
     jwt: null,
     profile: null,
     activePostId: null,
-    searchInput: null,
     snackBar: false,
     snackBarText: "",
     subscriptions: {profiles:[],threads:[]},
@@ -21,9 +20,6 @@ export default new Vuex.Store({
     },
     setProfile (state,profile) {
         state.profile = profile
-    },
-    commitSearchInput (state,searchInput) {
-        state.searchInput = searchInput;
     },
     setSnackBarText (state,snackBarText) {
         state.snackBar = true;

@@ -26,17 +26,13 @@ import store from "../store";
 export default {
   name: "Profile",
   mounted: function() {
-    const otherProfileId = this.$route.params.id;
+    const otherProfileId = this.profileId;
     if (otherProfileId) {
       this.axios
         .get(`http://localhost:3000/api/v1/u/${otherProfileId}`)
         .then(response => {
           this.otherProfile = response.data.data.profile;
         });
-    } else {
-      if (!this.profile) {
-        this.$router.push({ path: "/" });
-      }
     }
   },
   data() {
@@ -44,9 +40,13 @@ export default {
       otherProfile: null
     };
   },
+  props: ['profileId'],
   computed: {
     profile() {
-      return this.$route.params.id ? this.otherProfile : store.state.profile;
+      if(store.state.profile && store.state.profile.id === this.profileId){
+        return store.state.profile;
+      }
+      return this.otherProfile;
     }
   }
 };
@@ -57,7 +57,6 @@ export default {
   background-color: #eee;
 }
 #profile-username {
-  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 2.4rem;
   line-height: 3rem;
